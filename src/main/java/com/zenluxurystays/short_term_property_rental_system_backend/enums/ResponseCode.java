@@ -3,7 +3,6 @@ package com.zenluxurystays.short_term_property_rental_system_backend.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.tools.Diagnostic;
 
 @Getter
 @RequiredArgsConstructor
