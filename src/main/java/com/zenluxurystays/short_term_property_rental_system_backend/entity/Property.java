@@ -24,6 +24,9 @@ public class Property {
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyImage> images;
 
+    @OneToOne
+    private Booking booking;
+
     private String location;
     private String airbnbCalendar;
     private Double pricePerDay;
