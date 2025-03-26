@@ -7,4 +7,7 @@ import java.util.Map;
 
 public interface PropertyService {
     ResponseEntity<Map<String, String>> create(PropertyDto propertyDto);
+
+    ResponseEntity<PropertyDto> readById(Long id);
+
 }

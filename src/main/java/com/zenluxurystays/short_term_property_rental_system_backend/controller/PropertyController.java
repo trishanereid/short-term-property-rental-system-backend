@@ -25,8 +25,9 @@ public class PropertyController {
     public void read() {}
 
     @GetMapping("/by-id/{id}")
-    @PreAuthorize("hasRole = 'ROLE_ADMIN'")
-    public void readById() {}
+    public ResponseEntity<PropertyDto> readById(@PathVariable Long id) {
+        return propertyService.readById(id);
+    }
 
     @PatchMapping("/by-id/{id}")
     public void update() {}

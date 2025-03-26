@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zenluxurystays.short_term_property_rental_system_backend.dto.PropertyDto;
 import com.zenluxurystays.short_term_property_rental_system_backend.entity.Property;
 import com.zenluxurystays.short_term_property_rental_system_backend.enums.ResponseCode;
+import com.zenluxurystays.short_term_property_rental_system_backend.exception.PropertyDetailsNotFoundException;
 import com.zenluxurystays.short_term_property_rental_system_backend.repository.PropertyRepository;
 import com.zenluxurystays.short_term_property_rental_system_backend.service.PropertyService;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,17 @@ public class PropertyServiceImpl implements PropertyService {
 
         return ResponseEntity.ok(Collections.singletonMap(
                 ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage()));
+    }
+
+    @Override
+    public ResponseEntity<PropertyDto> readById(Long id) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new PropertyDetailsNotFoundException(
+                        ResponseCode.PROPERTY_NOT_FOUND.getMessage()
+                ));
+
+        return ResponseEntity.ok(
+                mapper.convertValue(property, PropertyDto.class)
+        );
     }
 }
