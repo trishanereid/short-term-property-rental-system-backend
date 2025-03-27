@@ -4,7 +4,6 @@ import com.zenluxurystays.short_term_property_rental_system_backend.dto.Property
 import com.zenluxurystays.short_term_property_rental_system_backend.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
