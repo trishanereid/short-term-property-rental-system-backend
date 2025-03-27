@@ -29,7 +29,9 @@ public class PropertyController {
     }
 
     @PatchMapping("/by-id/{id}")
-    public void update() {}
+    public ResponseEntity<Map<String, String>> update(@PathVariable Long id, @RequestBody PropertyDto propertyDto) {
+        return propertyService.update(id, propertyDto);
+    }
 
     @DeleteMapping("/by-id/{id}")
     public void delete() {}

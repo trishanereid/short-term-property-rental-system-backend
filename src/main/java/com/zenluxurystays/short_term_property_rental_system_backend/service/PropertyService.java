@@ -10,4 +10,5 @@ public interface PropertyService {
 
     ResponseEntity<PropertyDto> readById(Long id);
 
+    ResponseEntity<Map<String, String>> update(Long id, PropertyDto propertyDto);
 }

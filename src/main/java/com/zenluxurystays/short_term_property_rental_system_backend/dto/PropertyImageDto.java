@@ -6,6 +6,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PropertyImageDto {
-    private Long id;
     private String imagePath;
 }

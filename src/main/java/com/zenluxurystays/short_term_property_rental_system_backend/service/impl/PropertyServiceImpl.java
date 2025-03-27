@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +56,46 @@ public class PropertyServiceImpl implements PropertyService {
         );
     }
 
+    public ResponseEntity<Map<String, String>> update(Long id, PropertyDto propertyDto) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new PropertyDetailsNotFoundException(
+                        ResponseCode.PROPERTY_NOT_FOUND.getMessage()
+                ));
+
+        Optional.ofNullable(propertyDto.getTitle())
+                .ifPresent(property::setTitle);
+        Optional.ofNullable(propertyDto.getDescription())
+                .ifPresent(property::setDescription);
+        Optional.ofNullable(propertyDto.getLocation())
+                .ifPresent(property::setLocation);
+        Optional.ofNullable(propertyDto.getStatus())
+                .ifPresent(property::setStatus);
+        Optional.ofNullable(propertyDto.getAirbnbCalendar())
+                .ifPresent(property::setAirbnbCalendar);
+        Optional.ofNullable(propertyDto.getPricePerDay())
+                .ifPresent(property::setPricePerDay);
+
+        Optional.ofNullable(propertyDto.getImages())
+                .ifPresent(images -> {
+                    property.getImages().clear();
+                    List<PropertyImage> newImages = propertyDto.getImages().stream()
+                            .map(imageDto -> {
+                                PropertyImage propertyImage = new PropertyImage();
+                                propertyImage.setImagePath(imageDto.getImagePath());
+                                propertyImage.setProperty(property);
+                                return propertyImage;
+                            })
+                            .collect(Collectors.toList());
+
+                    property.getImages().addAll(newImages);
+                });
+
+        propertyRepository.save(property);
+
+        return ResponseEntity.ok(Collections.singletonMap(
+                ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage()));
+    }
+
     private PropertyDto mapToDto(Property property) {
         PropertyDto dto = new PropertyDto();
         dto.setTitle(property.getTitle());
@@ -66,7 +107,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         if (property.getImages() != null) {
             List<PropertyImageDto> images = property.getImages().stream()
-                    .map(propertyImage -> new PropertyImageDto(propertyImage.getId(), propertyImage.getImagePath()))
+                    .map(propertyImage -> new PropertyImageDto(propertyImage.getImagePath()))
                     .collect(Collectors.toList());
             dto.setImages(images);
         }
