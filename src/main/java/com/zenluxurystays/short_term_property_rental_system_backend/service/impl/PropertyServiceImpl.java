@@ -6,10 +6,12 @@ import com.zenluxurystays.short_term_property_rental_system_backend.dto.Property
 import com.zenluxurystays.short_term_property_rental_system_backend.entity.Property;
 import com.zenluxurystays.short_term_property_rental_system_backend.entity.PropertyImage;
 import com.zenluxurystays.short_term_property_rental_system_backend.enums.ResponseCode;
+import com.zenluxurystays.short_term_property_rental_system_backend.exception.PropertyDeletionException;
 import com.zenluxurystays.short_term_property_rental_system_backend.exception.PropertyDetailsNotFoundException;
 import com.zenluxurystays.short_term_property_rental_system_backend.repository.PropertyRepository;
 import com.zenluxurystays.short_term_property_rental_system_backend.service.PropertyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,7 @@ public class PropertyServiceImpl implements PropertyService {
         );
     }
 
+    @Override
     public ResponseEntity<Map<String, String>> update(Long id, PropertyDto propertyDto) {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new PropertyDetailsNotFoundException(
@@ -94,6 +97,24 @@ public class PropertyServiceImpl implements PropertyService {
 
         return ResponseEntity.ok(Collections.singletonMap(
                 ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage()));
+    }
+
+    @Override
+    public ResponseEntity<Void> delete(Long id) {
+
+        if (!propertyRepository.existsById(id)) {
+            throw new PropertyDetailsNotFoundException(
+                    ResponseCode.PROPERTY_NOT_FOUND.getMessage()
+            );
+        }
+
+        try {
+            propertyRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new PropertyDeletionException(ResponseCode.PROPERTY_CONSTRAINT_VIOLATION.getMessage());
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     private PropertyDto mapToDto(Property property) {

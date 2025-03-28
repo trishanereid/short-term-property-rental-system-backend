@@ -34,5 +34,7 @@ public class PropertyController {
     }
 
     @DeleteMapping("/by-id/{id}")
-    public void delete() {}
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        return propertyService.delete(id);
+    }
 }
