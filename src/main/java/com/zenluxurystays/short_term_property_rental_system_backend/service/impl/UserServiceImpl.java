@@ -61,7 +61,8 @@ public class UserServiceImpl implements UserService {
         try {
             authResponse = authenticationManager.authenticate(authentication);
         } catch (Exception e) {
-            throw new BadCredentialsException(ResponseCode.BAD_CREDENTIALS.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new LoginResponseDto(HttpStatus.UNAUTHORIZED.getReasonPhrase(), ""));
         }
 
         if (authResponse == null || !authResponse.isAuthenticated()) {

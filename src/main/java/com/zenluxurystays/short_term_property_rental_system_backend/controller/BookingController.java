@@ -23,6 +23,10 @@ public class BookingController {
         return bookingService.create(bookingDto);
     };
 
+    public void read() {
+
+    }
+
     public void cancel(){
 
     };
